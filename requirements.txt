@@ -1,0 +1,6 @@
+pyTelegramBotAPI
+httpx
+pymongo
+flask
+curl_cffi
+selenium
