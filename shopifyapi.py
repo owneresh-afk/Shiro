@@ -408,7 +408,41 @@ _RE_DELIVERY_LINE_1 = re.compile(r'"deliveryLineStableId"\s*:\s*"([^"]+)"')
 _RE_DELIVERY_LINE_2 = re.compile(r'"deliveryGroupStableId"\s*:\s*"([^"]+)"')
 _RE_DELIVERY_LINE_3 = re.compile(r"deliveryLineStableId['\"]\s*:\s*['\"]([^'\"]+)['\"]")
 _RE_DELIVERY_LINE_4 = re.compile(r'deliveryLines&quot;:\[\{&quot;stableId&quot;:&quot;([^&]+)&quot;')
-_RE_DELIVERY_LINE_5 = re.compile(r'"deliveryLines"\s*:\s*\[\s*\{\s*"stableId"\s*:\s*"([^"]+)"')
 _RE_MONEY_FORMAT = re.compile(r'\{\{amount\}\}')
 
-_RE_DELIVERY_LINE_5 = re.compile(r'"deliveryLines"\s*:\s*\[\s*\{\s*"stableId"\s*:\s*"([^"]+)"')
+def get_random_info():
+    """Generate random checkout info."""
+    addr = random.choice(_POOL_ADDRESSES)
+    fname = random.choice(_POOL_FIRST_NAMES)
+    lname = random.choice(_POOL_LAST_NAMES)
+    email = f"{fname.lower()}{lname.lower()}{random.randint(10,99)}@{random.choice(_POOL_EMAIL_DOMAINS)}"
+    return {
+        "email": email, "fname": fname, "lname": lname,
+        "phone": random.choice(_POOL_PHONES), "address": addr["add1"],
+        "city": addr["city"], "state": addr["state"], "state_short": addr["state_short"], "zip": addr["zip"]
+    }
+
+async def check_site_fast(site_url, proxy=None):
+    """Fast check to see if a site is Shopify and active."""
+    try:
+        async with _create_async_client(proxy) as client:
+            resp = await client.get(site_url, timeout=10)
+            return "shopify" in resp.text.lower() or "myshopify.com" in resp.text.lower()
+    except:
+        return False
+
+class ShopifyAuto:
+    """The main class for running Shopify checks."""
+    def __init__(self, site_url, proxy=None):
+        self.site_url = site_url
+        self.proxy = proxy
+        self.fp = get_random_fingerprint()
+
+    async def run_check(self):
+        # This is a placeholder for your main check logic
+        return {"status": "success", "site": self.site_url}
+
+async def run_shopify_check(site_url, proxy=None):
+    """Helper function for shiro.py."""
+    checker = ShopifyAuto(site_url, proxy)
+    return await checker.run_check()
