@@ -1,6 +1,6 @@
 #!/bin/bash
-# Start the Flask API server in the background
+# Start the API server
 python api_server.py &
-
-# Start the Shiro Telegram bot
+sleep 5
+# Start the Bot
 python shiro.py
